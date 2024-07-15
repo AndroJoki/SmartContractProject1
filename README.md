@@ -1,10 +1,10 @@
 # SmartContractProject
 
-This Solidity program is about minting tokens and burning tokens. The purpose of this program is to help understand tokens and get a feel on how it works in Solidity.
+This Solidity program is about depositing and withdrawing tokens. The purpose of this program is to help understand the statements require(), revert(), and assert().
 
 ## Description
 
-This program is a Solidity-based smart contract designed for minting and burning tokens on the Ethereum blockchain. It includes functions to create new tokens (mint) and destroy existing tokens (burn), allowing for dynamic management of token supply. This contract serves as a foundational example for developers looking to understand the basic operations of token supply control in Solidity, providing a stepping stone for more advanced token management systems in the future.
+This program is a Solidity-based smart contract designed to help developers understand and utilize the require(), revert(), and assert() statements for error handling in Solidity. It includes functions to deposit and withdraw tokens, showcasing how these statements can be used to enforce conditions, revert transactions, and ensure correctness in smart contract operations. This contract serves as a foundational example for developers looking to grasp the basic error handling mechanisms in Solidity, providing a stepping stone for more advanced smart contract development.
 
 ## Getting Started
 
@@ -12,50 +12,49 @@ This program is a Solidity-based smart contract designed for minting and burning
 
 To run this program, you can use Remix, an online Solidity IDE. To get started, go to the Remix website at https://remix.ethereum.org/.
 
-Once you are on the Remix website, create a new file by clicking on the "+" icon in the left-hand sidebar. Save the file with a .sol extension (e.g., myToken.sol). Copy and paste the following code into the file:
+Once you are on the Remix website, create a new file by clicking on the "+" icon in the left-hand sidebar. Save the file with a .sol extension (e.g., myBank.sol). Copy and paste the following code into the file:
 ```javascript
 // SPDX-License-Identifier: MIT
 pragma solidity 0.8.18;
 
-contract MyToken {
-
-    // public variables here
-    string public tokenName  = "DREW";
-    string public tokenAbbrv  = "DRO";
-    uint public totalSupply = 0;
-
-    // mapping variable here
+contract TokenBank {
     mapping(address => uint) public balances;
 
-    // mint function
-    function mint(address _address, uint _value) public {
-        totalSupply += _value;
-        balances[_address] += _value;
+    // Custom error for insufficient balance
+    error InsufficientBalance(uint requested, uint available);
+
+    // Function to deposit tokens to the bank account
+    function deposit(address _address, uint _amount) public {
+        require(_amount > 0, "Deposit amount must be greater than 0");
+        balances[_address] += _amount;
+
+        // Assert that the balance is correctly updated
+        assert(balances[_address] >= _amount);
     }
 
-    // burn function
-    function burn(address _address, uint _value) public {
-        if (balances[_address] >= _value) {
-            totalSupply -= _value;
-            balances[_address] -= _value;
+    // Function to withdraw tokens from the bank account
+    function withdraw(address _address, uint _amount) public {
+        if (_amount > balances[_address]) {
+            revert InsufficientBalance({requested: _amount, available: balances[_address]});
         }
+        balances[_address] -= _amount;
     }
 }
 ```
 
 To compile the code, click on the "Solidity Compiler" tab in the left-hand sidebar. Make sure the "Compiler" option is set to "0.8.18" (or another compatible version), and then click on the "Compile myToken.sol" button.
 
-Once the code is compiled, you can deploy the contract by clicking on the "Deploy & Run Transactions" tab in the left-hand sidebar. Select the "MyToken" contract from the dropdown menu, and then click on the "Deploy" button.
+Once the code is compiled, you can deploy the contract by clicking on the "Deploy & Run Transactions" tab in the left-hand sidebar. Select the "TokenBank" contract from the dropdown menu, and then click on the "Deploy" button.
 
 Once the contract is deployed, you can scroll down to see the deployed contract in the "Deployed/Unpinned Contracts" section. 
 
 ### Executing the program
 
-To mint tokens, click on the "MyToken" contract in the left-hand sidebar in the "Deployed/Unpinned Contracts" section, and then click on the "mint" function. Next, input the address of an account in the _address textfield and the amount of tokens to mint in the _value textfield. Finally, click on the "transact" button to execute the function and mint tokens on the account that was inputted.
+To deposit tokens, click on the "TokenBank" contract in the left-hand sidebar in the "Deployed/Unpinned Contracts" section, and then click on the "deposit" function. Next, input the address of an account in the _address textfield and the amount of tokens to deposit in the _amount textfield. Finally, click on the "transact" button to execute the function and deposit tokens to the account that was inputted.
 
-To burn tokens, click on the "MyToken" contract in the left-hand sidebar in the "Deployed/Unpinned Contracts" section, and then click on the "burn" function. Next, input the address of an account in the _address textfield and the amount of tokens to burn in the _value textfield. Finally, click on the "transact" button to execute the function and burn tokens on the account that was inputted.
+To withdraw tokens, click on the "TokenBank" contract in the left-hand sidebar in the "Deployed/Unpinned Contracts" section, and then click on the "withdraw" function. Next, input the address of an account in the _address textfield and the amount of tokens to withdraw in the _amount textfield. Finally, click on the "transact" button to execute the function and withdraw tokens from the account that was inputted.
 
-To check the balance or amount of tokens that an account has, click on the "MyToken" contract in the left-hand sidebar in the "Deployed/Unpinned Contracts" section, and then click on the "balances" function. Next, input the address of an account in the address textfield. Finally, click on the "call" button to execute the function and the amount of tokens of the account that was inputted will be displayed.
+To check the balance or amount of tokens that an account has, click on the "TokenBank" contract in the left-hand sidebar in the "Deployed/Unpinned Contracts" section, and then click on the "balances" function. Next, input the address of an account in the address textfield. Finally, click on the "call" button to execute the function and the amount of tokens of the account that was inputted will be displayed.
 
 ## Authors
 
